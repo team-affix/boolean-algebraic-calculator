@@ -3,7 +3,7 @@
 
 #include <string>
 #include <memory>
-#include <vector>
+#include <set>
 
 namespace ba_calculator
 {
@@ -19,7 +19,16 @@ namespace ba_calculator
     
     struct operand
     {
-        using ptr = std::shared_ptr<operand>;
+        struct ptr : public std::shared_ptr<operand>
+        {
+            ptr(
+                operand* a_operand
+            );
+            
+            bool operator<(
+                const ptr& a_operand
+            ) const;
+        };
 
         operand_types m_operand_type;
         
@@ -27,6 +36,10 @@ namespace ba_calculator
             const operand_types& a_operand_type
         );
         
+        virtual ptr expand(
+
+        ) const = 0;
+
         virtual ptr simplify(
 
         ) const = 0;
@@ -41,11 +54,11 @@ namespace ba_calculator
         ) const = 0;
 
         virtual bool operator<(
-            const ptr& a_operand
+            const operand& a_operand
         ) const;
 
         bool operator==(
-            const ptr& a_operand
+            const operand& a_operand
         ) const;
         
     };
@@ -58,6 +71,10 @@ namespace ba_calculator
             const std::string& a_identifier
         );
 
+        virtual ptr expand(
+
+        ) const;
+
         virtual ptr simplify(
 
         ) const;
@@ -72,7 +89,7 @@ namespace ba_calculator
         ) const;
 
         virtual bool operator<(
-            const ptr& a_operand
+            const operand& a_operand
         ) const;
 
     };
@@ -85,6 +102,10 @@ namespace ba_calculator
             const bool& a_value
         );
 
+        virtual ptr expand(
+
+        ) const;
+
         virtual ptr simplify(
 
         ) const;
@@ -99,7 +120,7 @@ namespace ba_calculator
         ) const;
 
         virtual bool operator<(
-            const ptr& a_operand
+            const operand& a_operand
         ) const;
         
     };
@@ -112,6 +133,10 @@ namespace ba_calculator
             const ptr& a_operand
         );
 
+        virtual ptr expand(
+
+        ) const;
+
         virtual ptr simplify(
 
         ) const;
@@ -126,19 +151,25 @@ namespace ba_calculator
         ) const;
 
         virtual bool operator<(
-            const ptr& a_operand
+            const operand& a_operand
         ) const;
         
     };
 
+    struct sum;
+
     struct product : public operand
     {
-        std::vector<ptr> m_operands;
+        std::set<ptr> m_operands;
 
         product(
-            const std::vector<ptr>& a_operands
+            const std::set<ptr>& a_operands
         );
         
+        virtual ptr expand(
+
+        ) const;
+
         virtual ptr simplify(
 
         ) const;
@@ -153,25 +184,29 @@ namespace ba_calculator
         ) const;
 
         virtual bool operator<(
-            const ptr& a_operand
+            const operand& a_operand
         ) const;
     
     private:
         static ptr distribute(
-            const ptr& a_sum_0,
-            const ptr& a_sum_1
+            const sum& a_sum_0,
+            const sum& a_sum_1
         );
 
     };
 
     struct sum : public operand
     {
-        std::vector<ptr> m_operands;
+        std::set<ptr> m_operands;
 
         sum(
-            const std::vector<ptr>& a_operands
+            const std::set<ptr>& a_operands
         );
         
+        virtual ptr expand(
+
+        ) const;
+
         virtual ptr simplify(
 
         ) const;
@@ -186,13 +221,18 @@ namespace ba_calculator
         ) const;
 
         virtual bool operator<(
-            const ptr& a_operand
+            const operand& a_operand
         ) const;
 
     private:
         static bool covers(
-            const ptr& a_product_0,
-            const ptr& a_product_1
+            const product& a_product_0,
+            const product& a_product_1
+        );
+
+        static bool are_opposites(
+            const product& a_product_0,
+            const product& a_product_1
         );
         
     };

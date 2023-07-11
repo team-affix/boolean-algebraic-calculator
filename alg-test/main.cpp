@@ -13,9 +13,9 @@ void test_invert(
 
     invert l_invert_0(operand::ptr(new unresolved("test")));
 
-    l_ss << l_invert_0.m_descriptor;
+    l_ss << l_invert_0.to_string();
     
-    assert(l_ss.str() == "!(test)");
+    assert(l_ss.str() == "!test");
 
     // Clear the stringstream.
     l_ss.str("");
@@ -23,9 +23,9 @@ void test_invert(
 
     operand::ptr l_sub_0 = l_invert_0.substitute("t", operand::ptr(new resolved(0)));
 
-    l_ss << l_sub_0->m_descriptor;
+    l_ss << l_sub_0->to_string();
 
-    assert(l_ss.str() == "!(test)");
+    assert(l_ss.str() == "!test");
 
     // Clear the stringstream.
     l_ss.str("");
@@ -33,9 +33,9 @@ void test_invert(
 
     operand::ptr l_sub_1 = l_invert_0.substitute("test", operand::ptr(new resolved(0)));
 
-    l_ss << l_sub_1->m_descriptor;
+    l_ss << l_sub_1->to_string();
 
-    assert(l_ss.str() == "!(0)");
+    assert(l_ss.str() == "!0");
 
     // Clear the stringstream.
     l_ss.str("");
@@ -43,9 +43,9 @@ void test_invert(
 
     operand::ptr l_simp_0 = l_invert_0.simplify();
 
-    l_ss << l_simp_0->m_descriptor;
+    l_ss << l_simp_0->to_string();
     
-    assert(l_ss.str() == "!(test)");
+    assert(l_ss.str() == "!test");
 
     // Clear the stringstream.
     l_ss.str("");
@@ -53,7 +53,7 @@ void test_invert(
 
     operand::ptr l_simp_1 = l_sub_1->simplify();
 
-    l_ss << l_simp_1->m_descriptor;
+    l_ss << l_simp_1->to_string();
     
     assert(l_ss.str() == "1");
 
