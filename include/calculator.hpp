@@ -31,18 +31,36 @@ namespace ba_calculator
         };
 
         operand_types m_operand_type;
+
+    private:
+        bool          m_is_reduced;
+
+    public:
+        virtual ~operand(
+
+        );
         
         operand(
             const operand_types& a_operand_type
         );
         
-        virtual ptr expand(
+    protected:
+        virtual ptr reduce_operands(
 
-        ) const = 0;
-
+        ) const;
+    
         virtual ptr simplify(
 
-        ) const = 0;
+        ) const;
+
+        virtual ptr expand(
+
+        ) const;
+
+    public:
+        ptr reduce(
+
+        ) const;
 
         virtual ptr substitute(
             const std::string& a_identifier,
@@ -67,17 +85,13 @@ namespace ba_calculator
     {
         std::string m_identifier;
 
+        virtual ~unresolved(
+
+        );
+
         unresolved(
             const std::string& a_identifier
         );
-
-        virtual ptr expand(
-
-        ) const;
-
-        virtual ptr simplify(
-
-        ) const;
 
         virtual ptr substitute(
             const std::string& a_identifier,
@@ -98,17 +112,13 @@ namespace ba_calculator
     {
         bool m_value;
 
+        virtual ~resolved(
+
+        );
+
         resolved(
             const bool& a_value
         );
-
-        virtual ptr expand(
-
-        ) const;
-
-        virtual ptr simplify(
-
-        ) const;
 
         virtual ptr substitute(
             const std::string& a_identifier,
@@ -129,18 +139,28 @@ namespace ba_calculator
     {
         ptr m_operand;
         
+        virtual ~invert(
+
+        );
+        
         invert(
             const ptr& a_operand
         );
 
-        virtual ptr expand(
+    protected:
+        virtual ptr reduce_operands(
 
         ) const;
 
         virtual ptr simplify(
 
         ) const;
+    
+        virtual ptr expand(
 
+        ) const;
+
+    public:
         virtual ptr substitute(
             const std::string& a_identifier,
             const ptr& a_operand
@@ -162,18 +182,28 @@ namespace ba_calculator
     {
         std::set<ptr> m_operands;
 
+        virtual ~product(
+
+        );
+
         product(
             const std::set<ptr>& a_operands
         );
         
-        virtual ptr expand(
+    protected:
+        virtual ptr reduce_operands(
 
         ) const;
 
         virtual ptr simplify(
 
         ) const;
+    
+        virtual ptr expand(
 
+        ) const;
+
+    public:
         virtual ptr substitute(
             const std::string& a_identifier,
             const ptr& a_substitution_operand
@@ -199,18 +229,28 @@ namespace ba_calculator
     {
         std::set<ptr> m_operands;
 
+        virtual ~sum(
+
+        );
+
         sum(
             const std::set<ptr>& a_operands
         );
         
-        virtual ptr expand(
+    protected:
+        virtual ptr reduce_operands(
 
         ) const;
 
         virtual ptr simplify(
 
         ) const;
+    
+        virtual ptr expand(
 
+        ) const;
+
+    public:
         virtual ptr substitute(
             const std::string& a_identifier,
             const ptr& a_substitution_operand
